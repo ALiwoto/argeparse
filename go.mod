@@ -2,6 +2,6 @@ module github.com/ALiwoto/argparser
 
 go 1.18
 
-require github.com/AnimeKaizoku/ssg v1.1.3
+require github.com/ALiwoto/ssg v1.1.38
 
-require golang.org/x/text v0.3.7 // indirect
+require golang.org/x/text v0.18.0 // indirect

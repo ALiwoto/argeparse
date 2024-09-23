@@ -9,63 +9,54 @@ import (
 	"errors"
 	"strings"
 
-	ws "github.com/AnimeKaizoku/ssg/ssg"
+	ws "github.com/ALiwoto/ssg/ssg"
 )
 
-// Flag is the options passed along with the commands
-// by users. they should send them with prefix "--",
-// but we will remove them in the pTools.
-type Flag struct {
-	name   string
-	index  int
-	value  interface{}
-	fType  FlagType
-	emptyT bool
-}
-
-type EventArgs struct {
-	prefixes   []rune
-	command    string // command without '/' or '!'
-	flags      []Flag
-	rawData    string
-	firstValue string
-}
-
-// ParseArg will parse the whole text into an EventArg and will return it.
 func ParseArg(text string, prefixes []rune) (e *EventArgs, err error) {
+	return ParseArgWithOptions(text, &ParseOptions{
+		Prefixes: prefixes,
+	})
+}
+
+// ParseArgWithOptions will parse the whole text into an EventArg and will return it.
+func ParseArgWithOptions(text string, options *ParseOptions) (e *EventArgs, err error) {
 	if text == "" {
-		return nil, errors.New("text cannot be empty")
+		return nil, errors.New("ParseArgWithOptions: text cannot be empty")
 	}
 
-	if len(prefixes) == 0 {
-		prefixes = DefaultPrefixes
+	if options == nil {
+		options = GetDefaultParseOptions()
+	}
+
+	if len(options.Prefixes) == 0 {
+		options.Prefixes = DefaultPrefixes
 	}
 
 	ss := ws.Ss(text)
-	if !ss.HasRunePrefix(prefixes...) {
-		return nil, errors.New("this message is not a command at all")
+	if !ss.HasRunePrefix(options.Prefixes...) {
+		return nil, errors.New("ParseArgWithOptions: input text is not a command")
 	}
 
 	cmdR := ss.SplitStr(ws.SPACE_VALUE)
 	if len(cmdR) == ws.BaseIndex {
-		return nil, errors.New("wasn't able to get the command")
+		return nil, errors.New("ParseArgWithOptions: unable to get the command")
 	}
 
 	cmd := cmdR[ws.BaseIndex]
 	if cmd.IsEmpty() {
-		return nil, errors.New("length of the command cannot be zero")
+		return nil, errors.New("ParseArgWithOptions: length of the command cannot be zero")
 	}
 
-	cmdSs := cmd.TrimStr(toStrArray(prefixes)...)
+	cmdSs := cmd.TrimStr(toStrArray(options.Prefixes)...)
 	if cmdSs.IsEmpty() {
-		return nil, errors.New("command cannot be only whitespace")
+		return nil, errors.New("ParseArgWithOptions: command cannot be only whitespace")
 	}
 
 	cmdStr := cmdSs.GetValue()
 
 	e = &EventArgs{
-		command:  cmdStr,
-		prefixes: prefixes,
+		command: cmdStr,
+		options: options,
 	}
 
 	// lock the special characters such as "--", ":", "=".
@@ -73,13 +64,13 @@ func ParseArg(text string, prefixes []rune) (e *EventArgs, err error) {
 
 	tmpOSs := ss.SplitStr(ws.FLAG_PREFIX)
 	// check if we have any flags or not.
-	// I think this if is not necessary actually,
+	// I think this is not necessary actually,
 	// but I just added it to prevent some cases of
 	// panics. and also it will reduce the time order
 	// I guess.
 	if len(tmpOSs) < ws.BaseTwoIndex {
 		// please notice that we should send the original
-		// text to this method.
+		// text to this function.
 		// because our locked QString contains JA characters
 		// and should not be used here.
 		lookRaw(&text, e)
@@ -151,7 +142,13 @@ func ParseArg(text string, prefixes []rune) (e *EventArgs, err error) {
 }
 
 func ParseArgDefault(text string) (e *EventArgs, err error) {
-	return ParseArg(text, DefaultPrefixes)
+	return ParseArgWithOptions(text, GetDefaultParseOptions())
+}
+
+func GetDefaultParseOptions() *ParseOptions {
+	return &ParseOptions{
+		Prefixes: DefaultPrefixes,
+	}
 }
 
 func toStrArray(r []rune) []string {
@@ -177,12 +174,12 @@ func fixTmpStr(tmp string) string {
 // please use this function when and only when
 // no flags are provided for our commands.
 func lookRaw(text *string, e *EventArgs) {
-	owoStr := strings.SplitN(*text, e.command, ws.BaseTwoIndex)
-	if len(owoStr) < ws.BaseTwoIndex {
+	myStr := strings.SplitN(*text, e.command, ws.BaseTwoIndex)
+	if len(myStr) < ws.BaseTwoIndex {
 		return
 	}
 
-	tmp := strings.Join(owoStr[ws.BaseOneIndex:], ws.EMPTY)
+	tmp := strings.Join(myStr[ws.BaseOneIndex:], ws.EMPTY)
 	tmp = strings.TrimSpace(tmp)
 
 	e.rawData = tmp

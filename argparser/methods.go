@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"strings"
 
-	ws "github.com/AnimeKaizoku/ssg/ssg"
+	ws "github.com/ALiwoto/ssg/ssg"
 )
 
 //---------------------------------------------------------

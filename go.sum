@@ -1,4 +1,6 @@
-github.com/AnimeKaizoku/ssg v1.1.3 h1:J33RtTU54sdAiabG8vo9Nqo4lITVOw0IkhIVol36RbM=
-github.com/AnimeKaizoku/ssg v1.1.3/go.mod h1:pe9BzQLW45VHgs4Puq1WcvnY+G5r07ecg2+MIycC1OM=
-golang.org/x/text v0.3.7 h1:olpwvP2KacW1ZWvsR7uQhoyTYvKAupfQrRGBFM352Gk=
-golang.org/x/text v0.3.7/go.mod h1:u+2+/6zg+i71rQMx5EYifcz6MCKuco9NR6JIITiCfzQ=
+github.com/ALiwoto/ssg v1.1.38 h1:nVGsObrzLv174qzNva29Ki9x7xkmtUWsX3cMEimT/Bo=
+github.com/ALiwoto/ssg v1.1.38/go.mod h1:977/edS++uXWeyaTA9giTWPi8QubiIkb6ij0+0tC9gU=
+golang.org/x/text v0.15.0 h1:h1V/4gjBv8v9cjcR6+AR5+/cIYK5N/WAgiv4xlsEtAk=
+golang.org/x/text v0.15.0/go.mod h1:18ZOQIKpY8NJVqYksKHtTdi31H5itFRjB5/qKTNYzSU=
+golang.org/x/text v0.18.0 h1:XvMDiNzPAl0jr17s6W9lcaIhGUfUORdGCNsuLmPG224=
+golang.org/x/text v0.18.0/go.mod h1:BuEKDfySbSR4drPmRPG/7iBdf8hvFMuRexcpahXilzY=
